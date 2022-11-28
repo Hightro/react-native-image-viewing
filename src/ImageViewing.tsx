@@ -6,7 +6,7 @@
  *
  */
 
-import React, { ComponentType, useCallback, useRef, useEffect } from "react";
+import React, { ComponentType, useCallback, useRef, useEffect, useMemo } from "react";
 import {
   Animated,
   Dimensions,
@@ -42,6 +42,7 @@ type Props = {
   delayLongPress?: number;
   HeaderComponent?: ComponentType<{ imageIndex: number }>;
   FooterComponent?: ComponentType<{ imageIndex: number }>;
+  supportedOrientations?: ModalProps["supportedOrientations"];
 };
 
 const DEFAULT_ANIMATION_TYPE = "fade";
@@ -66,6 +67,7 @@ function ImageViewing({
   delayLongPress = DEFAULT_DELAY_LONG_PRESS,
   HeaderComponent,
   FooterComponent,
+  supportedOrientations
 }: Props) {
   const imageList = useRef<VirtualizedList<ImageSource>>(null);
   const [opacity, onRequestCloseEnhanced] = useRequestClose(onRequestClose);
@@ -87,6 +89,7 @@ function ImageViewing({
     },
     [imageList]
   );
+  const _supportedOrientations = useMemo(() => supportedOrientations ?? ["portrait"], [supportedOrientations]);
 
   if (!visible) {
     return null;
@@ -99,7 +102,7 @@ function ImageViewing({
       presentationStyle={presentationStyle}
       animationType={animationType}
       onRequestClose={onRequestCloseEnhanced}
-      supportedOrientations={["portrait"]}
+      supportedOrientations={_supportedOrientations}
       hardwareAccelerated
     >
       <StatusBarManager presentationStyle={presentationStyle} />
